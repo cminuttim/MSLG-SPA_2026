@@ -20,9 +20,13 @@ MSLG-SPA_2026/
     └── train_config.yaml                   Hyperparameters for all Q* variants
 ```
 
-LoRA adapter weights for the fine-tuned variants are not included in
-this repository because of their size. They will be released
-separately on the Hugging Face Hub; see the link in the paper.
+LoRA adapter weights for the fine-tuned variants are not included
+in this repository because of their size. The configuration file in
+`config/train_config.yaml` documents the exact training recipe for
+each submitted variant, so the runs can be reproduced from the
+released code, prompts and config on the publicly available base
+model. Specific adapter checkpoints can be made available to
+interested researchers on request.
 
 ## Submitted variants
 
@@ -70,14 +74,13 @@ If you use any of this material, please cite the AxoloTux system
 description paper and the shared-task overview:
 
 ```bibtex
-@inproceedings{axolotux2026mslgspa,
-  title  = {LoRA Fine-Tuning, Frontier-LLM Prompting, and Encoder-Decoder
-            Baselines for Low-Resource Bidirectional Sign Language Gloss
-            Translation},
-  author = {Minutti-Martinez, Carlos and Torres-N{\'a}jera, Alejandra and
-            Escalante-Ramirez, Boris and Olveres, Jimena},
-  booktitle = {Proceedings of the Iberian Languages Evaluation Forum
-               (IberLEF 2026)},
-  year   = {2026},
+@article{axolotux2026mslgspa,
+  title   = {LoRA Fine-Tuning, Frontier-LLM Prompting, and Encoder-Decoder
+             Baselines for Low-Resource Bidirectional Sign Language Gloss
+             Translation},
+  author  = {Minutti-Martinez, Carlos and Torres-N{\'a}jera, Alejandra and
+             Escalante-Ramirez, Boris and Olveres, Jimena},
+  journal = {CEUR Workshop Proceedings},
+  year    = {2026},
 }
 ```

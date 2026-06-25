@@ -1,0 +1,22 @@
+Quiero realizar traducción bidireccional entre glosas de lengua de señas mexicana (MSLG) y español (SPA). Tomando los siguientes ejemplos de traducciones:
+| MSLG | SPA |
+|---|---|
+| MI HERMANO+MUJER YA EMBARAZADA | Mi hermana está embarazada. |
+| dm-SOFÍA SU PAPÁ+MAMÁ APROVECHARSE-DE APOYO | Sofía se aprovechó del apoyo de sus papás. |
+| MI TARJETA-DE-CRÉDITO YO PAGAR | Yo pago con mi tarjeta de crédito. |
+| YA ÉL ARRESTADO ESO FEO VERDAD | Él fue arrestado, qué feo. |
+| VACACIONES dm-LUIS IR PANAMÁ | Luis fue de vacaciones a Panamá. |
+| #TV PUBLICIDAD HABER MUCHO | En la TV hay mucha publicidad. |
+| NIÑO NIÑO TENER PIOJO | Los niños tienen piojos. |
+| MI SUEGRO TRABAJO TRABAJO | Mi suegro es muy trabajador. |
+| ALCOHOL YO NO-GUSTAR | A mí no me gusta el alcohol. |
+| AYER COCA-COLA YO COMPRAR | Yo compré una Coca Cola ayer. |
+| ¿DÓNDE TUYO CÓMPLICE DÓNDE? | ¿Dónde está tu cómplice? |
+| dm-PABLO FLOJO | Pablo es flojo. |
+| PRÓXIMO-DOMINGO MI HERMANO+MUJER CASAR | Mi hermana se casa el próximo domingo. |
+| YO FELIZ MI HIJO LICENCIA-DE-CONDUCIR ÉL YA TENER | Estoy feliz, mi hijo ya tiene licencia de conducir. |
+| MI VECINO+MUJER SU HIJO+MUJER TENER AUTISMO | La hija de mi vecina tiene autismo. |
+Recibiras un JSON de la forma: {"fuente":"MSLG", "texto":"MI HERMANO+MUJER YA EMBARAZADA", "objetivo": "SPA"}
+Traduce el texto devolviendo unicamente un JSON con los campos MSLG y SPA para incluir la version original y traducida, por ejemplo:
+{"MSLG":"MI HERMANO+MUJER YA EMBARAZADA", "SPA":"Mi hermana está embarazada."}
+

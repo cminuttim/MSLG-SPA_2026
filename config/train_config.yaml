@@ -1,0 +1,90 @@
+# Training configuration for the AxoloTux MSLG-SPA 2026 submissions.
+# These are the canonical hyperparameters used by code/train_mslg_translator_qwen_9b.py
+# to produce the Q* fine-tuned variants reported in the paper.
+
+model:
+  name_or_path: huihui-ai/Huihui-Qwen3.5-9B-abliterated
+  output_dir: ./MSLG_SPA_Translator_Qwen35_9B_LoRA_
+
+quantization:
+  bits: 8                       # LLM.int8() via BitsAndBytes
+                                # (set to 4 for NF4/QLoRA on smaller GPUs)
+  bnb_4bit_quant_type: nf4
+  bnb_4bit_use_double_quant: true
+
+lora:
+  r: 16
+  alpha: 32                     # alpha = 2 * r
+  dropout: 0.10
+  bias: none
+  target_modules:               # all linear projections of attention + MLP
+    - q_proj
+    - k_proj
+    - v_proj
+    - o_proj
+    - gate_proj
+    - up_proj
+    - down_proj
+
+training:
+  per_device_train_batch_size: 1
+  per_device_eval_batch_size: 1
+  gradient_accumulation_steps: 16    # effective batch size = 16
+  learning_rate: 1.0e-4
+  weight_decay: 0.01
+  warmup_ratio: 0.05
+  max_sequence_length: 1024
+  mixed_precision: bf16              # falls back to fp16 on pre-Ampere GPUs
+  logging_steps: 25
+
+phase1_warmup:                  # used when a base/auxiliary corpus is included
+  corpus: corpus.csv            # Lara-Ortiz et al. 2025 (~3,000 pairs)
+  epochs: 1
+
+phase2_specialization:
+  corpus: MSLG_SPA_train.txt    # MSLG-SPA 2026 challenge corpus (490 pairs)
+                                # or train_corpus_destil.txt for QDistil2 (extended)
+                                # or MSLG_SPA_train_destil.txt for QDistilTest
+  epochs: 3
+  checkpoints_per_epoch: 3
+  save_total_limit: 20
+  early_stopping_split: 0.10    # held-out fraction of the corpus
+
+split:
+  test_size: 0.10
+  seed: 42
+
+inference:
+  do_sample: false              # beam search, not sampling
+  num_beams: 4
+  length_penalty: 1.0
+  repetition_penalty: 1.05
+  max_new_tokens: 128
+
+hardware:
+  gpu: NVIDIA RTX 4090
+  vram_gb: 24
+  notes: |
+    A single Phase 2 fine-tune on the 490-pair challenge corpus
+    completes in under one hour. Total resident memory at training
+    time is roughly 10 GB for the 8-bit base + LoRA adapter +
+    optimizer state at the configured effective batch size.
+
+variants:                       # mapping between paper variant names and corpora
+  QBase:
+    phase2_corpus: challenge          # MSLG_SPA_train.txt
+    use_phase1: false
+  QDistil2:
+    phase2_corpus: extended           # train_corpus_destil.txt
+    use_phase1: true                  # 1 warm-up epoch on Lara-Ortiz Base
+  QDistilTest:
+    phase2_corpus: challenge_plus_test
+    use_phase1: false                 # challenge + Claude/Gemini predictions
+                                      # on the test inputs (transductive)
+  QDistilMix:
+    type: ensemble
+    notes: |
+      Not a fine-tune. For each test sentence we score every
+      candidate produced by the other AxoloTux submissions with the
+      gradient-boosting scorer (see code/train_classifier.py) and
+      keep the candidate with the highest p_correct.
